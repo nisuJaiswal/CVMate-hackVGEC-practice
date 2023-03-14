@@ -22,12 +22,12 @@ const Logic = () => {
       <FormControlLabel
         onChange={() => handleLogRegSwitch()}
         control={<Switch />}
-        label="register"
+        label={logReg === LOGIN ? ('Log-in') : ('Register')}
       />
       <FormControlLabel
         onChange={() => handleUserFacultySwitch()}
         control={<Switch />}
-        label="faculty"
+        label={userFaculty === 'user' ? ('User') : ('Faculty')}
       />
       {userFaculty === "user" && logReg === LOGIN && <Login />}
       {userFaculty === "user" && logReg === REGISTER && <Register />}

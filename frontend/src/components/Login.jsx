@@ -24,7 +24,10 @@ export default function SignIn() {
       password: data.get("password"),
     });
   };
-
+  // const [formData, setFormData] = React.useState({})
+  // const onChange = e => {
+  //   setFormData({... formData, [e.target.name]: e.target.value})
+  // }
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
