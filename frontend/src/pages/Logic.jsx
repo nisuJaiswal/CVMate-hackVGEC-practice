@@ -3,6 +3,7 @@ import { useState } from "react";
 import Login from "../components/Login";
 import Register from "../components/Register";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import Box from "@mui/material/Box";
 import Switch from "@mui/material/Switch";
 
 const Logic = () => {
@@ -19,16 +20,18 @@ const Logic = () => {
   };
   return (
     <>
-      <FormControlLabel
-        onChange={() => handleLogRegSwitch()}
-        control={<Switch />}
-        label={logReg === LOGIN ? ('Log-in') : ('Register')}
-      />
-      <FormControlLabel
-        onChange={() => handleUserFacultySwitch()}
-        control={<Switch />}
-        label={userFaculty === 'user' ? ('User') : ('Faculty')}
-      />
+      <form>
+        <FormControlLabel
+          onChange={() => handleLogRegSwitch()}
+          control={<Switch />}
+          label={logReg === LOGIN ? "Log-in" : "Register"}
+        />
+        <FormControlLabel
+          onChange={() => handleUserFacultySwitch()}
+          control={<Switch />}
+          label={userFaculty === "user" ? "User" : "Faculty"}
+        />
+      </form>
       {userFaculty === "user" && logReg === LOGIN && <Login />}
       {userFaculty === "user" && logReg === REGISTER && <Register />}
       {userFaculty === "faculty" && logReg === LOGIN && <Login />}
