@@ -1,0 +1,2 @@
+Login: /api/user/login --POST
+Register: /api/user --POST
