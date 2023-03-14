@@ -2,10 +2,14 @@ const User = require('../models/userSchema')
 const asyncHandler = require('express-async-handler')
 const bcrypt = require('bcryptjs')
 const path = require('path');
+const jwt = require('jsonwebtoken')
 const formidable = require('formidable');
 const fs = require('fs')
+
+
 // @Route /api/user
 // @Req POST
+
 let upload_path = path.join(__dirname, "../uploadFolder/");
 const registerUser = asyncHandler(async (req, res) => {
 
@@ -24,14 +28,16 @@ const registerUser = asyncHandler(async (req, res) => {
         if (!username || !password || !firstName || !lastName) {
 
             res.status(400)
-            throw new Error("Please Provide All Required Fileds")
+            res.json({ err: "Please Provide All Required Fileds" })
+            return
         }
 
         // Checking for existing User
         const existingUser = await User.findOne({ username })
         if (existingUser) {
             res.status(400)
-            throw new Error("User Already Exists")
+            res.json({ err: "User Already Exists" })
+            return
         }
 
         // Hashing Password
@@ -41,18 +47,22 @@ const registerUser = asyncHandler(async (req, res) => {
         // Operation to perform if no any file uploaded
         if (!files.uploadFile) {
             try {
-                const response = await User.create({
+                const user = await User.create({
                     // Set Other Data in db
                     username,
                     password: hashedpassword,
                     firstName,
                     lastName,
                     imageUrl: "default.jpg",
-                    aboutMe
+                    aboutMe,
                 });
-                res.json(response);
+                res.json({
+                    user,
+                    token: generateToken(user._id)
+                });
             } catch (error) {
-                res.status(400).json({ error: error.message });
+                res.status(400).json({ err: error.message })
+                    ;
             }
             return;
         }
@@ -75,7 +85,7 @@ const registerUser = asyncHandler(async (req, res) => {
             if (err) throw new Error(err);
         });
         try {
-            const response = await User.create({
+            const user = await User.create({
                 // Set Other Data in Db
                 username,
                 password: hashedpassword,
@@ -84,11 +94,41 @@ const registerUser = asyncHandler(async (req, res) => {
                 aboutMe,
                 imageUrl: newName,
             });
-            res.json(response);
+            res.json({
+                user, token: generateToken(user._id)
+            });
         } catch (error) {
             res.status(400).json({ error: error.message });
         }
     });
 })
 
-module.exports = { registerUser }
+// @Route /api/user/login
+// @Req POST
+const loginUser = asyncHandler(async (req, res) => {
+    const { username, password } = req.body
+
+    if (!username || !password) {
+        res.status(400)
+        throw new Error('Please Provide All the fields')
+    }
+
+    const user = await User.findOne({ username })
+    if (!user) {
+        res.status(400)
+        throw new Error("User not found")
+    }
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+        res.status(200).json({ user, token: generateToken(user._id) })
+    } else {
+        res.status(400)
+        throw new Error("Invalid Credentials")
+    }
+})
+
+// Generate JWT Token
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JSON_SECRET, { expiresIn: '1d' })
+}
+module.exports = { registerUser, loginUser }
