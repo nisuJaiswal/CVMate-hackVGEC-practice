@@ -1,12 +1,10 @@
-
-import './App.css';
+import "./App.css";
+import Logic from "./pages/Logic";
 
 function App() {
   return (
     <>
-      <h1>
-        Hello from MUI
-      </h1>
+      <Logic />
     </>
   );
 }
