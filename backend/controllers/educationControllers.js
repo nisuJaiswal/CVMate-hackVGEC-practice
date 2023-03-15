@@ -49,6 +49,8 @@ const addEducation = asyncHandler(async (req, res) => {
     }
 })
 
+// @Route /api/education/:id
+// @Rew DELETE
 const removeEducation = asyncHandler(async (req, res) => {
     const { id } = req.params //Education Id
     if (!id) {
@@ -56,15 +58,59 @@ const removeEducation = asyncHandler(async (req, res) => {
         throw new Error('No ID')
     }
 
-    const removedEdu = await Education.findByIdAndRemove(id)
+    const removedEdu = await Education.findByIdAndRemove({ _id: id })
+
     if (removedEdu) {
         const updatedUser = await User.updateOne({ _id: req.user._id }, { $pull: { "education": removedEdu._id } })
-        res.json(updatedUser)
+        if (updatedUser) {
+            // await updatedUser.save()
+            res.json({ success: true, message: "Education Removed Successfully" })
+        } else {
+            res.status(400)
+            throw new Error('User cannot be updated')
+        }
     } else {
         res.status(400)
-        throw new Error("Cannot delete Education")
+        throw new Error("Education not found")
     }
 
 })
 
-module.exports = { addEducation, removeEducation }
+// @Route /api/education/:id
+// @Req PUT
+const editEducation = asyncHandler(async (req, res) => {
+    const { school, degree, field, startDate, endDate, description } = req.body
+    const { id } = req.params
+
+    const formatStr = 'YYYY-MM-DD';
+    if (!(moment(startDate, formatStr, true).isValid() && moment(endDate, formatStr, true).isValid())) {
+        res.status(400)
+        throw new Error("Dates are not Valid")
+    }
+
+    if (new Date(startDate) >= new Date(endDate)) {
+        res.status(400)
+        throw new Error("End date cannot be greater than Start Date")
+    }
+
+    const foundEducation = await Education.findOne({ _id: id })
+    if (!foundEducation) {
+        res.status(400)
+        throw new Error("Education not found")
+    }
+
+    const education = await Education.updateOne({ _id: id }, {
+        school, degree, field, startDate, endDate, description
+    })
+
+    if (education.modifiedCount === 1 && education.acknowledged) {
+        res.status(200).json({ success: true, message: "Education Updated Successfully" })
+    } else {
+        // res.status(400).json({ success: false, message: "New Education seems to be same as Older one" })
+        res.status(400)
+        throw new Error('New Education seems to be same as Older one')
+    }
+
+})
+
+module.exports = { addEducation, removeEducation, editEducation }
