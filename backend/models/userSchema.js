@@ -25,11 +25,11 @@ const userSchema = mongoose.Schema({
         default: ''
     },
     education: [{
-        user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Education',
-            required: true
-        }
+
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Education',
+        required: true
+
     }],
     achievements: [{
         type: mongoose.Schema.Types.ObjectId,
