@@ -49,4 +49,22 @@ const addEducation = asyncHandler(async (req, res) => {
     }
 })
 
-module.exports = { addEducation }
+const removeEducation = asyncHandler(async (req, res) => {
+    const { id } = req.params //Education Id
+    if (!id) {
+        res.status(400)
+        throw new Error('No ID')
+    }
+
+    const removedEdu = await Education.findByIdAndRemove(id)
+    if (removedEdu) {
+        const updatedUser = await User.updateOne({ _id: req.user._id }, { $pull: { "education": removedEdu._id } })
+        res.json(updatedUser)
+    } else {
+        res.status(400)
+        throw new Error("Cannot delete Education")
+    }
+
+})
+
+module.exports = { addEducation, removeEducation }
