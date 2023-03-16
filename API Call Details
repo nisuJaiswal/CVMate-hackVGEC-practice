@@ -3,3 +3,5 @@ Register: /api/user --POST  -username -password -firstName -lastName -uploadFile
 Add Education: /api/education --POST --school, --degree, --field, --startDate, --endDate, --description
 Delete Education: /api/education/:id --id will be education id DELETE REQ
 Edit Education: /api/education/:id --id will be education id PUT REQ --school, --degree, --field, --startDate, --endDate, --description
+
+currently catagoty taken from body, if needed then only take catId

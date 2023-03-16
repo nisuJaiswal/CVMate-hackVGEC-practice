@@ -19,7 +19,7 @@ const achievementsScema = mongoose.Schema({
         ref: 'Faculty',
         required: true
     },
-    issuedOrganized: {
+    issuedOrganization: {
         type: String
     },
     issueDate: {
@@ -32,7 +32,7 @@ const achievementsScema = mongoose.Schema({
     verifiedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Faculty',
-        required: true
+        // required: true
     },
     reviews: [{
         facultyId: {

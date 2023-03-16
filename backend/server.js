@@ -14,6 +14,8 @@ app.use(express.urlencoded({ extended: false }))
 
 app.use('/api/user', require('./routes/userRoutes'))
 app.use('/api/education', require('./routes/educationRoutes'))
+app.use('/api/achievements', require('./routes/achievementsRoutes'))
+
 app.use(errorHandler)
 
 app.listen(PORT, () => console.log(`Server Running on http://localhost:${PORT}`))
