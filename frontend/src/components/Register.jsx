@@ -12,19 +12,21 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import { toast } from "react-toastify";
 import Switch from "@mui/material/Switch";
 import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { register, reset } from "../redux/auth/authSlice";
+import Spinner from "./Spinner";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const theme = createTheme();
 
 export default function SignUp() {
-  // const dispatch = useDispatch();
-  // const { isAuthenticated, user } = useSelector((state) => state.user);
-  // const { isUpdated, error, loading } = useSelector((state) => state.profile);
-  // const history = useNavigate();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // const headingColor = indigo[600];
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
 
   const [userFaculty, setuserFaculty] = useState("user");
   const [firstname, setFirstname] = useState();
@@ -51,6 +53,7 @@ export default function SignUp() {
       password: data.get("password"),
     });
   };
+
   const dataChanged = (e) => {
     const reader = new FileReader();
 
@@ -58,13 +61,13 @@ export default function SignUp() {
       if (reader.readyState === 2) {
         setAvatarPreview(reader.result);
         setAvatar(reader.result);
-
         setIsImgChanged(true);
       }
     };
 
     reader.readAsDataURL(e.target.files[0]);
   };
+
   const openFile = () => {
     fileInput.current.click();
   };
@@ -82,56 +85,42 @@ export default function SignUp() {
         progress: undefined,
         theme: "light",
       });
-    }
-    console.log("inside if");
-    const formData = new FormData();
+    } else {
+      const formData = new FormData();
 
-    formData.set("uploadFile", avatar);
-    formData.set("firstname", firstname);
-    formData.set("lastname", lastname);
-    formData.set("username", username);
-    formData.set("aboutMe", aboutMe);
-    formData.set("passsword", password);
-    formData.set("cPasssword", cPassword);
-    // dispatch(updateProfile(formData));
+      formData.set("uploadFile", avatar);
+      formData.set("firstname", firstname);
+      formData.set("lastname", lastname);
+      formData.set("username", username);
+      formData.set("aboutMe", aboutMe);
+      formData.set("passsword", password);
+      // formData.set("cPasssword", cPassword);
+      dispatch(register(formData));
+    }
   }
 
   const fileInput = useRef(null);
 
   // useEffect(() => {
-  // if (!isAuthenticated) {
-  //     history('/login')
-  // }
-  // if (user) {
-  //     const { username, firstname, lastname, address, email, image } = user
-  //     setUsername(username)
-  //     setFirstname(firstname)
-  //     setLastname(lastname)
-  //     setAddress(address)
-  //     setEmail(email)
-  //     setImage(image)
-  // }
-  // if (error) {
-  //     console.log("ERROR")
-  // }
+  //   if (isError) {
+  //     toast.error(message);
+  //   }
 
-  // if (isUpdated) {
-  //     console.log("Profile Updated Successfully");
-  //     dispatch(loadUser());
+  //   if (isSuccess || user) {
+  //     navigate("/");
+  //   }
 
-  //     history("/");
+  //   dispatch(reset());
+  // }, [user, isLoading, isError, isSuccess, message, navigate, dispatch]);
 
-  //     dispatch({
-  //         type: UPDATE_PROFILE_RESET,
-  //     });
+  // if (isLoading) {
+  //   return <Spinner />;
   // }
-  // }, [isAuthenticated, history, user, isUpdated, dispatch, error])
-
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
-        <form method="post">
+        <form method="post" encType="multipart/form-data">
           <Box
             sx={{
               marginTop: 8,
@@ -160,6 +149,8 @@ export default function SignUp() {
               ref={fileInput}
               onChange={dataChanged}
               accept="images/*"
+              // value={avatar}
+              // onChange={(e) => setImage(e.target.value)}
               style={{ display: "none" }}
             />
 

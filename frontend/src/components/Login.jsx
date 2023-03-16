@@ -11,13 +11,25 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
+import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { login, reset } from "../redux/auth/authSlice";
+import Spinner from "./Spinner";
 
 const theme = createTheme();
 
 export default function SignIn() {
   const [userFaculty, setuserFaculty] = useState("user");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
 
   const handleUserFacultySwitch = () => {
     userFaculty === "user" ? setuserFaculty("faculty") : setuserFaculty("user");
@@ -25,12 +37,29 @@ export default function SignIn() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    console.log("on submit called");
+    const formData = {
+      email,
+      password,
+    };
+    dispatch(login(formData));
   };
+
+  // useEffect(() => {
+  //   if (isError) {
+  //     toast.error(message);
+  //   }
+
+  //   if (isSuccess || user) {
+  //     navigate("/");
+  //   }
+
+  //   dispatch(reset());
+  // }, [user, isLoading, isError, isSuccess, message, navigate, dispatch]);
+
+  // if (isLoading) {
+  //   return <Spinner />;
+  // }
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -47,7 +76,7 @@ export default function SignIn() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Log in
           </Typography>
           <form method="post">
             <FormControlLabel
@@ -70,6 +99,8 @@ export default function SignIn() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                value={email}
+                onChange={(e) => e.target.value}
               />
               <TextField
                 margin="normal"
@@ -80,6 +111,8 @@ export default function SignIn() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                value={password}
+                onChange={(e) => e.target.value}
               />
               <Button
                 type="submit"
@@ -88,7 +121,7 @@ export default function SignIn() {
                 onSubmit={handleSubmit}
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign In
+                Log In
               </Button>
               <Grid container>
                 <Button
