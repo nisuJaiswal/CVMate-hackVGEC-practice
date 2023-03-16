@@ -8,20 +8,21 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import { FaSignInAlt, FaSignOutAlt, FaUser } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { FaSignOutAlt } from "react-icons/fa";
 import { logout, reset } from "../redux/auth/authSlice";
 
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth.user);
+  const { user } = useSelector((state) => state.auth);
 
   const onLogout = () => {
     dispatch(logout());
     dispatch(reset());
-    navigate("/");
+    navigate("/login");
   };
+
   return (
     <React.Fragment>
       <GlobalStyles
@@ -38,7 +39,7 @@ const Header = () => {
           <Typography variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
             Cv Maker
           </Typography>
-          {user ? (
+          {user && (
             <Button
               variant="outlined"
               sx={{ my: 1, mx: 1.5 }}
@@ -46,39 +47,6 @@ const Header = () => {
             >
               <FaSignOutAlt /> Logout
             </Button>
-          ) : (
-            <>
-              <Button
-                onClick={() => Navigate("/login")}
-                variant="outlined"
-                sx={{ my: 1, mx: 1.5 }}
-              >
-                <Link
-                  fullWidth
-                  style={{ textDecoration: "none", color: "grey" }}
-                  to="/login"
-                  variant="body2"
-                >
-                  <FaSignInAlt />
-                  {"Login"}
-                </Link>
-              </Button>
-              <Button
-                onClick={() => Navigate("/register")}
-                variant="outlined"
-                sx={{ my: 1, mx: 1.5 }}
-              >
-                <Link
-                  fullWidth
-                  style={{ textDecoration: "none", color: "grey" }}
-                  to="/register"
-                  variant="body2"
-                >
-                  <FaUser />
-                  {"Register"}
-                </Link>
-              </Button>
-            </>
           )}
         </Toolbar>
       </AppBar>

@@ -25,7 +25,7 @@ export default function SignUp() {
   const navigate = useNavigate();
 
   const { user, isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.auth.user
+    (state) => state.auth
   );
 
   const [userFaculty, setuserFaculty] = useState("user");
@@ -43,15 +43,6 @@ export default function SignUp() {
 
   const handleUserFacultySwitch = () => {
     userFaculty === "user" ? setuserFaculty("faculty") : setuserFaculty("user");
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
   };
 
   const dataChanged = (e) => {
@@ -95,7 +86,6 @@ export default function SignUp() {
       formData.set("lastName", lastname);
       formData.set("uploadFile", avatar);
       formData.set("aboutMe", aboutMe);
-      // formData.set("cPasssword", cPassword);
       dispatch(register(formData));
     }
   }
@@ -130,9 +120,6 @@ export default function SignUp() {
               alignItems: "center",
             }}
           >
-            {/* <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar> */}
             <Avatar
               src={isImgChanged ? avatarPreview : image}
               alt="User"
@@ -150,8 +137,6 @@ export default function SignUp() {
               ref={fileInput}
               onChange={dataChanged}
               accept="images/*"
-              // value={avatar}
-              // onChange={(e) => setImage(e.target.value)}
               style={{ display: "none" }}
             />
 
@@ -173,7 +158,7 @@ export default function SignUp() {
             <Box
               component="form"
               noValidate
-              onSubmit={handleSubmit}
+              // onSubmit={handleSubmit}
               sx={{ mt: 3 }}
             >
               <Grid container spacing={2}>

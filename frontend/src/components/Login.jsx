@@ -28,7 +28,7 @@ export default function Login() {
   const [password, setPassword] = useState();
 
   const { user, isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.auth.user
+    (state) => state.auth
   );
 
   const handleUserFacultySwitch = () => {
@@ -37,9 +37,8 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("on submit called");
     const formData = {
-      email,
+      username: email,
       password,
     };
     dispatch(login(formData));
@@ -53,8 +52,6 @@ export default function Login() {
     if (isSuccess || user) {
       navigate("/");
     }
-
-    dispatch(reset());
   }, [user, isLoading, isError, isSuccess, message, navigate, dispatch]);
 
   if (isLoading) {
@@ -84,12 +81,7 @@ export default function Login() {
               control={<Switch />}
               label={userFaculty === "user" ? "User" : "Faculty"}
             />
-            <Box
-              // component="form"
-              // onSubmit={handleSubmit}
-              noValidate
-              sx={{ mt: 1 }}
-            >
+            <Box noValidate sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
                 required
@@ -118,7 +110,6 @@ export default function Login() {
                 type="submit"
                 fullWidth
                 variant="contained"
-                // onSubmit={handleSubmit}
                 sx={{ mt: 3, mb: 2 }}
               >
                 Log In
