@@ -25,7 +25,7 @@ export default function SignUp() {
   const navigate = useNavigate();
 
   const { user, isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.auth
+    (state) => state.auth.user
   );
 
   const [userFaculty, setuserFaculty] = useState("user");
@@ -74,6 +74,7 @@ export default function SignUp() {
 
   function handleOnSubmit(e) {
     e.preventDefault();
+
     if (password !== cPassword) {
       toast.error("Passwords not Matched", {
         position: "bottom-center",
@@ -88,12 +89,12 @@ export default function SignUp() {
     } else {
       const formData = new FormData();
 
-      formData.set("uploadFile", avatar);
-      formData.set("firstname", firstname);
-      formData.set("lastname", lastname);
       formData.set("username", username);
+      formData.set("password", password);
+      formData.set("firstName", firstname);
+      formData.set("lastName", lastname);
+      formData.set("uploadFile", avatar);
       formData.set("aboutMe", aboutMe);
-      formData.set("passsword", password);
       // formData.set("cPasssword", cPassword);
       dispatch(register(formData));
     }
@@ -101,21 +102,21 @@ export default function SignUp() {
 
   const fileInput = useRef(null);
 
-  // useEffect(() => {
-  //   if (isError) {
-  //     toast.error(message);
-  //   }
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
+    }
 
-  //   if (isSuccess || user) {
-  //     navigate("/");
-  //   }
+    if (isSuccess || user) {
+      navigate("/");
+    }
 
-  //   dispatch(reset());
-  // }, [user, isLoading, isError, isSuccess, message, navigate, dispatch]);
+    dispatch(reset());
+  }, [user, isLoading, isError, isSuccess, message, navigate, dispatch]);
 
-  // if (isLoading) {
-  //   return <Spinner />;
-  // }
+  if (isLoading) {
+    return <Spinner />;
+  }
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">

@@ -6,5 +6,6 @@ const errorHandler = (err, req, res, next) => {
         message: err.message ? err.message : err,
         stack: err.stack
     })
+    console.log(err)
 }
 module.exports = { errorHandler }

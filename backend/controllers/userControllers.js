@@ -13,7 +13,6 @@ const fs = require('fs')
 let upload_path = path.join(__dirname, "../uploadFolder/");
 const registerUser = asyncHandler(async (req, res) => {
 
-
     const form = formidable();
 
     form.parse(req, async (err, fields, files) => {
@@ -61,8 +60,8 @@ const registerUser = asyncHandler(async (req, res) => {
                     token: generateToken(user._id)
                 });
             } catch (error) {
+                console.log(error)
                 res.status(400).json({ err: error.message })
-                    ;
             }
             return;
         }
@@ -98,6 +97,7 @@ const registerUser = asyncHandler(async (req, res) => {
                 user, token: generateToken(user._id)
             });
         } catch (error) {
+            console.log(error)
             res.status(400).json({ error: error.message });
         }
     });

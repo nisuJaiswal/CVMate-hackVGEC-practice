@@ -19,7 +19,7 @@ import Spinner from "./Spinner";
 
 const theme = createTheme();
 
-export default function SignIn() {
+export default function Login() {
   const [userFaculty, setuserFaculty] = useState("user");
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -28,15 +28,15 @@ export default function SignIn() {
   const [password, setPassword] = useState();
 
   const { user, isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.auth
+    (state) => state.auth.user
   );
 
   const handleUserFacultySwitch = () => {
     userFaculty === "user" ? setuserFaculty("faculty") : setuserFaculty("user");
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
     console.log("on submit called");
     const formData = {
       email,
@@ -45,21 +45,21 @@ export default function SignIn() {
     dispatch(login(formData));
   };
 
-  // useEffect(() => {
-  //   if (isError) {
-  //     toast.error(message);
-  //   }
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
+    }
 
-  //   if (isSuccess || user) {
-  //     navigate("/");
-  //   }
+    if (isSuccess || user) {
+      navigate("/");
+    }
 
-  //   dispatch(reset());
-  // }, [user, isLoading, isError, isSuccess, message, navigate, dispatch]);
+    dispatch(reset());
+  }, [user, isLoading, isError, isSuccess, message, navigate, dispatch]);
 
-  // if (isLoading) {
-  //   return <Spinner />;
-  // }
+  if (isLoading) {
+    return <Spinner />;
+  }
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -78,15 +78,15 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Log in
           </Typography>
-          <form method="post">
+          <form method="post" onSubmit={handleSubmit}>
             <FormControlLabel
               onChange={() => handleUserFacultySwitch()}
               control={<Switch />}
               label={userFaculty === "user" ? "User" : "Faculty"}
             />
             <Box
-              component="form"
-              onSubmit={handleSubmit}
+              // component="form"
+              // onSubmit={handleSubmit}
               noValidate
               sx={{ mt: 1 }}
             >
@@ -100,7 +100,7 @@ export default function SignIn() {
                 autoComplete="email"
                 autoFocus
                 value={email}
-                onChange={(e) => e.target.value}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <TextField
                 margin="normal"
@@ -112,13 +112,13 @@ export default function SignIn() {
                 id="password"
                 autoComplete="current-password"
                 value={password}
-                onChange={(e) => e.target.value}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
-                onSubmit={handleSubmit}
+                // onSubmit={handleSubmit}
                 sx={{ mt: 3, mb: 2 }}
               >
                 Log In
